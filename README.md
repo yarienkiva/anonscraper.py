@@ -7,3 +7,7 @@ A webscraper to download anonfile hosted files in bulk. Takes a raw pastebin (ht
 ## How to use
 
 Install the required libraries with ``pip3 install -r requirements.txt`` the run the script with ``python3 anonscrape.py``. Be sure to do this in a new directory with enough space to download the leaks (otherwhise your filesystem is going to get messy real quick).
+
+## Coming soon
+
+Not getting blocked after ~70 dumps : using proxies, random useragents, referrers and add a slight delay between each request to the site
