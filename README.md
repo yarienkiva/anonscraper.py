@@ -1,5 +1,5 @@
 # anonscraper.py
-A webscraper to download anonfile hosted files in bulk. Takes a raw pastebin link as input.
+A webscraper to download anonfile hosted files in bulk. Takes a raw pastebin (https://pastebin.com/raw/...)link as input.
 
 ![quick context](anonscrape.jpg)
 > Translation : I got a pastebin of a bunch of links to dumps hosted on anonfile but the js is a pain. Does anybody have a way to not  manually click to download everything?
