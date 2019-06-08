@@ -10,4 +10,4 @@ Install the required libraries with ``pip3 install -r requirements.txt`` the run
 
 ## Coming soon
 
-Not getting blocked after ~70 dumps : using proxies, random useragents, referrers and add a slight delay between each request to the site
+Not getting blocked after ~70 dumps : using proxies, random useragents, referrers and adding a slight delay between each request to the site
