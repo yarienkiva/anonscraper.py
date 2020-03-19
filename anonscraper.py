@@ -1,12 +1,9 @@
 #! /usr/bin/python3
 # coding: utf8
-import requests, re
-
+import requests
 import wget
 import argparse
 from bs4 import BeautifulSoup
-
-TAG_RE = re.compile(r'<[^>]+>')
 
 parser = argparse.ArgumentParser(description='Rah c\'est bien les scripts python')
 group = parser.add_mutually_exclusive_group(required=True)
