@@ -1,44 +1,64 @@
+#! /usr/bin/python3
 # coding: utf8
-import requests
-from bs4 import BeautifulSoup
-import re
+import requests, re
+
 import wget
+import argparse
+from bs4 import BeautifulSoup
 
 TAG_RE = re.compile(r'<[^>]+>')
 
-paste_url = input("Raw pastebin link : ") or "https://pastebin.com/raw/HU8qWibZ" 
-response = requests.get(paste_url)
+parser = argparse.ArgumentParser(description='Rah c\'est bien les scripts python')
+group = parser.add_mutually_exclusive_group(required=True)
+group.add_argument('-f', '--file',
+                    metavar='DumpFile',
+                    type=str,
+                    help='A file of anonfile urls',
+                    required=False)
 
-paste_links = response.content.splitlines()
+group.add_argument('-p', '--link',
+                    metavar='PasteLink',
+                    type=str,
+                    help='A link to a pastebin of anonfile urls',
+                    required=False)
+
+parser.add_argument('--no-download',
+                    action='store_true',
+                    help='Don\'t download files, only get the redirected urls',
+                    required=False)
+
+parser.add_argument('-o', '--output', 
+                    metavar='OutputFile',
+                    type=str,
+                    help='Output file',
+                    required=False)
+
+args = parser.parse_args()
+
+if args.file:
+	with open(args.file, "r") as f:
+		paste_links  = f.read().splitlines()
+elif args.link:
+	r =  requests.get(paste_url)
+	paste_links = r.content.splitlines()
 
 for paste in paste_links:
 		
-	print("Base url : " + str(paste))
-
-	# get the link that we are normally redirected to by 
-	# extracting it from the title tag  
-	# this is not the only way to do this the link can be found
-	# in multiple tags in the page (it's also the only link on the page)
+	print("[+] Base url : ", str(paste))
+	
 	response = requests.get(paste)
-	soup = BeautifulSoup(response.text, "html.parser")
-	
-	anon_title = str(soup.findAll('title')[0])
-	anon_title = TAG_RE.sub('', anon_title)
-	anon_url = anon_title.split(" ")[2] 
+	if response.ok:
+		soup = BeautifulSoup(response.text, "html.parser")
+		anon_url = soup.find(id='download-url')['href']
 
-	print("Redirected to : " + anon_url)
-	
-	# get the link to the dump
-	# this time it's nested in the middle of the page
-	# and there are multiple links so it has to be done in
-	# a rather static way
-	response = requests.get(anon_url)
-	soup = BeautifulSoup(response.text, "html.parser")
+		print("[+] Redirected to : ", anon_url)
 
-	dump_content = soup.find("div",{"class":"col-xs-12 col-md-4 text-center"})
-	dump_link = dump_content.find("a").get('href')
-	
-	print("Dump link : " + dump_link)
+		if not args.no_download:
+			print("[+] Downloading : ", anon_url)
+			wget.download(anon_url)
 
-	# I really couldn't care less about not using urllib
-	wget.download(dump_link)
+		if args.output:
+			with open(args.output, "a") as f:
+				f.write(anon_url)
+	else:
+		print("[-] 404 on", str(paste))
